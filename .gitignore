@@ -1,0 +1,7 @@
+/venv
+*.pyc
+*.log
+.settings
+.xml
+src/__pycache__/
+test/__pycache__/
