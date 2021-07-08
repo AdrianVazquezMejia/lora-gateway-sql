@@ -5,7 +5,9 @@ Created on Jul 7, 2021
 '''
 import unittest
 import sqlite3
-from sqlite_manager import energy_load
+
+#from sqlite_manager import energy_load
+from src.sqlite_manager import *
 
 loras = [{"loraid":255,"slaves":[1,2,3]},{"loraid":254,"slaves":[0]}]
 
@@ -59,18 +61,15 @@ class Test(unittest.TestCase):
         cur.execute('INSERT INTO meter_table (meter_id, energy,status) VALUES (?, ?, ? )',("00fe00",0,True))
         conn.commit()
         cur.close()
-        energy_load(loras, needToDropTable=False)
+        energy_load(loras)
         cur = conn.cursor()
         cur.execute('SELECT * FROM meter_table WHERE meter_id = ?',("00fe00", ))
         expected_len = len(cur.fetchall())
+        print(expected_len)
         self.assertEqual(1,expected_len)
+        cur.execute('DROP TABLE IF EXISTS meter_table')
         cur.close()
-    
-
-        
-        
-        
-        
+   
         
 if __name__ == "__main__":
     import sys;sys.argv = ['', 'Test.testName']
