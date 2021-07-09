@@ -11,8 +11,8 @@ def energy_load(loras):
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor()
     cur.execute('DROP TABLE IF EXISTS meter_table ')
-    #cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, date STRING, state INTEGER)")
-    cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, state INTEGER)")
+    #cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, date STRING, state BOOLEAN)") Original
+    cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, state BOOLEAN)")  #Para el test
     conn.commit()
     for i in range(len(loras)):
         nuevo = 1
@@ -24,18 +24,13 @@ def energy_load(loras):
             msb_4 = str(hex(loras[i]['loraid']).split('x')[-1])
 
         for s in range(len(loras[i]['slaves'])):
-            #print(loras[i]['slaves'][s])
             lsb_2 = str(0)+str(hex(loras[i]['slaves'][s]).split('x')[-1])
             meter_id = str('00'+msb_4+lsb_2)
-            #print("METER_ID: ",meter_id)
             date = datetime.datetime.now()
             cur.execute('SELECT meter_id FROM meter_table')
             for row in cur:
                 nuevo = 1
-                #print("EL ROW ACTUAL",row[0])
                 if(row[0] == meter_id): 
-                    #print("Ya Existe",row[0],"en la base")
-                    #print("ESTA ES",row[0])
                     nuevo = 0
                     break               
             if(nuevo==1):

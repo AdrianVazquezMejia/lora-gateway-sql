@@ -10,7 +10,7 @@ import sqlite3
 from src.sqlite_manager import *
 
 #loras = [{"loraid":255,"slaves":[1,2,3]},{"loraid":254,"slaves":[0]}]   Original
-loras = [{"loraid":255,"slaves":[1,2,3,4]},{"loraid":254,"slaves":[0]}]
+loras = [{"loraid":255,"slaves":[1,2,3,4]},{"loraid":254,"slaves":[0]}]  #Para el test
 
 class Test(unittest.TestCase):        
         
