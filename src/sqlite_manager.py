@@ -9,6 +9,9 @@ def energy_load(loras):
     pass
 def load_json(id, write_api_key):
     return None
+
+def update_date_base(meterid, data):
+    pass
 if __name__ == '__main__':
     print("Hello world")
     loras = [{"loraid":255,"slaves":[1,2,3]},{"loraid":254,"slaves":[0]}]

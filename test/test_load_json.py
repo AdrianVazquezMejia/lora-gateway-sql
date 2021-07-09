@@ -13,7 +13,7 @@ from src.sqlite_manager import *
 class TestLoadJson(unittest.TestCase):
     def setUp(self):
         
-        conn = sqlite3.connect("../test/meter_db.sqlite")
+        conn = sqlite3.connect("meter_db.sqlite")
         cur = conn.cursor()
     
         cur.execute('DROP TABLE IF EXISTS meter_table')
