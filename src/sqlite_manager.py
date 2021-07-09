@@ -8,10 +8,11 @@ import datetime
 
 def energy_load(loras):
     #print("ENERGY LOAD INICIA")
-    conn = sqlite3.connect('medidores.sqlite')
+    conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor()
-    cur.execute('DROP TABLE IF EXISTS meter_db ')
-    cur.execute("CREATE TABLE meter_db (meter_id STRING, energy INTEGER, date STRING, state INTEGER)")
+    cur.execute('DROP TABLE IF EXISTS meter_table ')
+    #cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, date STRING, state INTEGER)")
+    cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, state INTEGER)")
     conn.commit()
     for i in range(len(loras)):
         nuevo = 1
@@ -28,7 +29,7 @@ def energy_load(loras):
             meter_id = str('00'+msb_4+lsb_2)
             #print("METER_ID: ",meter_id)
             date = datetime.datetime.now()
-            cur.execute('SELECT meter_id FROM meter_db')
+            cur.execute('SELECT meter_id FROM meter_table')
             for row in cur:
                 nuevo = 1
                 #print("EL ROW ACTUAL",row[0])
@@ -38,9 +39,10 @@ def energy_load(loras):
                     nuevo = 0
                     break               
             if(nuevo==1):
-#print("NUEVO MEDIDOR")
-                cur.execute("INSERT INTO meter_db(meter_id,energy,date,state) VALUES(?,?,?,?)",(meter_id,0,date,0))
-                conn.commit()
+                #print("NUEVO MEDIDOR")
+                #cur.execute("INSERT INTO meter_table(meter_id,energy,date,state) VALUES(?,?,?,?)",(meter_id,0,date,0))   #Original
+                cur.execute("INSERT INTO meter_table(meter_id,energy,state) VALUES(?,?,?)",(meter_id,0,1))            #Modificado para el test
+                conn.commit() 
             nuevo = 1
     cur.close()
 
@@ -56,6 +58,6 @@ if __name__ == '__main__':
     print("Hello world")
     loras = [{"loraid":255,"slaves":[1,2,3]},{"loraid":254,"slaves":[0]}]
     energy_load(loras)
-    #load_json(id= "0001", write_api_key="PYF7YMZNOM3TJVSM")
+    load_json(id= "0001", write_api_key="PYF7YMZNOM3TJVSM")
     
     
