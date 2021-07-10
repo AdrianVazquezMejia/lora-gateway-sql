@@ -6,7 +6,7 @@ Created on Jul 7, 2021
 import unittest
 import sqlite3
 
-from sqlite_manager import energy_load
+#from sqlite_manager import energy_load
 from src.sqlite_manager import *
 
 loras = [{"loraid":255,"slaves":[1,2,3]},{"loraid":254,"slaves":[0]}]

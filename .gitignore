@@ -3,5 +3,6 @@
 *.log
 .settings
 .xml
+.sqlite
 src/__pycache__/
 test/__pycache__/
