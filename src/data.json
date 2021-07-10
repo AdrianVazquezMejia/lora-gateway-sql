@@ -1,0 +1,26 @@
+{
+    "id": "0001",
+    "write_api_key": "PYF7YMZNOM3TJVSM",
+    "updates": [
+        {
+            "meterid": "00ff01",
+            "energy": 0,
+            "date": 0
+        },
+        {
+            "meterid": "00ff02",
+            "energy": 0,
+            "date": 0
+        },
+        {
+            "meterid": "00ff03",
+            "energy": 0,
+            "date": 0
+        },
+        {
+            "meterid": "00fe00",
+            "energy": 0,
+            "date": 0
+        }
+    ]
+}

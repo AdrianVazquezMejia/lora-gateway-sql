@@ -5,14 +5,14 @@ Created on Jul 7, 2021
 '''
 import sqlite3
 import datetime
+import json
 
 def energy_load(loras):
-    #print("ENERGY LOAD INICIA")
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor()
     cur.execute('DROP TABLE IF EXISTS meter_table ')
-    #cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, date STRING, state BOOLEAN)") Original
-    cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, state BOOLEAN)")  #Para el test
+    #cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, date STRING, state BOOLEAN)")  #Original
+    cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, state BOOLEAN)")              #Para el test
     conn.commit()
     for i in range(len(loras)):
         nuevo = 1
@@ -35,16 +35,32 @@ def energy_load(loras):
                     break               
             if(nuevo==1):
                 #print("NUEVO MEDIDOR")
-                #cur.execute("INSERT INTO meter_table(meter_id,energy,date,state) VALUES(?,?,?,?)",(meter_id,0,date,0))   #Original
-                cur.execute("INSERT INTO meter_table(meter_id,energy,state) VALUES(?,?,?)",(meter_id,0,1))            #Modificado para el test
+                #cur.execute("INSERT INTO meter_table(meter_id,energy,date,state) VALUES(?,?,?,?)",(meter_id,0,date,False))   #Original
+                cur.execute("INSERT INTO meter_table(meter_id,energy,state) VALUES(?,?,?)",(meter_id,0,1))              #Modificado para el test
                 conn.commit() 
             nuevo = 1
     cur.close()
 
 
 def load_json(id, write_api_key):
-    return None
-
+    conn = sqlite3.connect('meter_db.sqlite')
+    cur = conn.cursor()
+    data = {"id": "0001","write_api_key": "PYF7YMZNOM3TJVSM",}
+    data['updates'] = []
+    cur.execute('SELECT * FROM meter_table')
+    for row in cur:
+        data['updates'].append({
+            "meterid": row[0],
+            "energy": row[1],
+            #"date": row[2],            #Original
+            "date": 0,                  #Para el test
+            "state": row[3]
+            })
+    with open('data.json', 'w') as file:
+        json.dump(data, file, indent=4)
+    cur.close()
+    return data
+                
 
 def update_date_base(meterid, data):
     pass
