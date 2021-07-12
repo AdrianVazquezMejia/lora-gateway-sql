@@ -11,7 +11,7 @@ def energy_load(loras):
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor()
     #cur.execute('DROP TABLE IF EXISTS meter_table ')#El objetivo de la base de dato es almacenar no se puede borrar
-    #cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, date TEXT, state BOOLEAN)")    #Para el test
+    #cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, date TEXT, state BOOLEAN)")   #Para el test
     conn.commit()
     #lsb en nombres mas human readable
     for lora in loras:# Prueba de esta manera
