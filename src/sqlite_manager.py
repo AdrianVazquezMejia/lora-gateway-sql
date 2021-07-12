@@ -10,8 +10,7 @@ import json
 def energy_load(loras):
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor()
-    #cur.execute('DROP TABLE IF EXISTS meter_table ')#El objetivo de la base de dato es almacenar no se puede borrar
-    #cur.execute("CREATE TABLE meter_table (meter_id STRING, energy INTEGER, date TEXT, state BOOLEAN)")   #Para el test
+    cur.execute("CREATE TABLE IF NOT EXISTS meter_table (meter_id STRING,energy INTEGER,date TEXT, status BOOLEAN)")   #Para el test
     conn.commit()
     #lsb en nombres mas human readable
     for lora in loras:# Prueba de esta manera
@@ -25,7 +24,8 @@ def energy_load(loras):
             cur.execute('SELECT * FROM meter_table WHERE meter_id = ?',(meter_id.hex(), ))
             if cur.fetchone() == None:
                 date = datetime.datetime.now()
-                cur.execute("INSERT INTO meter_table(meter_id,energy,date,state) VALUES(?,?,?,?)",(meter_id.hex(),0,date,1))      #Modificado para el test
+                #cur.execute("INSERT INTO meter_table(meter_id,energy,date,status) VALUES(?,?,?,?)",(meter_id.hex(),0,date,1))      #Original
+                cur.execute("INSERT INTO meter_table(meter_id,energy,status) VALUES(?,?,?)",(meter_id.hex(),0,date,1))      #Modificado para el test
             conn.commit() 
     cur.close()
 
@@ -40,8 +40,8 @@ def load_json(id, write_api_key):
         data['updates'].append({
             "meterid": row[0],
             "energy": row[1],
-            "date": row[2],            #Original
-            #"date": 0,                  #Para el test
+            #"date": row[2],            #Original
+            "date": 0,                  #Para el test
             "state": row[3]
             })
     cur.close()
