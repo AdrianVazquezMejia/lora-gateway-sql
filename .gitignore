@@ -2,6 +2,8 @@
 *.pyc
 *.log
 .settings
+.sqlite
+.json
 .xml
 src/__pycache__/
 test/__pycache__/
