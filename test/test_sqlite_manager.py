@@ -16,9 +16,11 @@ class Test(unittest.TestCase):
         
     def testSerialMetersCreates(self):
         #SR01 #SR05 #SR09
-        energy_load(loras)
+        
         conn = sqlite3.connect('meter_db.sqlite')
         cur = conn.cursor()
+        cur.execute('DROP TABLE IF EXISTS meter_table')
+        energy_load(loras)
         cur.execute('SELECT meter_id FROM meter_table ORDER BY meter_id ASC')
         expected_meter_id = ["00fe00","00ff01","00ff02","00ff03","00ff04"]
         actual_meter_id = []
@@ -33,6 +35,10 @@ class Test(unittest.TestCase):
         #SR21 #SR06
         conn = sqlite3.connect('meter_db.sqlite')
         cur = conn.cursor()
+        cur.execute('DROP TABLE IF EXISTS meter_table')
+
+        energy_load(loras)
+
         cur.execute('SELECT name FROM sqlite_master WHERE type= ? AND name= ? ',('table','meter_table'))
         expected_relation_name  = "meter_table"
         actual_relation_name = cur.fetchone()[0]
@@ -43,20 +49,27 @@ class Test(unittest.TestCase):
         #SR07 #SR09
         conn = sqlite3.connect("meter_db.sqlite") 
         cur = conn.cursor()
-    
+        cur.execute('DROP TABLE IF EXISTS meter_table')
+
         energy_load(loras)
         cur.execute('SELECT * FROM meter_table WHERE meter_id = ?',("00fe00", ))
         actual_tuple = cur.fetchone()
-        expected_tuple = ('00fe00', 0, 1)
+        expected_id = "00fe00"
+        expected_energy = 0
+        expected_state = 1
+        actual_id = actual_tuple[0]
+        actual_energy = actual_tuple[1]
+        actual_state = actual_tuple[3]
         cur.close()
-        self.assertEqual(actual_tuple, expected_tuple)
+        self.assertEqual(actual_id, expected_id)
+        self.assertEqual(actual_energy,expected_energy)
+        self.assertEqual(actual_state, expected_state)
     
-    
+
     def testNoAddExistingMeter(self):
         #SR08
         conn = sqlite3.connect("meter_db.sqlite")
         cur = conn.cursor()
-    
         cur.execute('DROP TABLE IF EXISTS meter_table')
         cur.execute('CREATE TABLE meter_table (meter_id TEXT, energy INTEGER, status BOOLEAN)')
         cur.execute('INSERT INTO meter_table (meter_id, energy,status) VALUES (?, ?, ? )',("00fe00",0,True))
@@ -67,7 +80,6 @@ class Test(unittest.TestCase):
         cur.execute('SELECT * FROM meter_table WHERE meter_id = ?',("00fe00", ))
         expected_len = len(cur.fetchall())
         self.assertEqual(1,expected_len)
-        cur.execute('DROP TABLE IF EXISTS meter_table')
         cur.close()
    
         
