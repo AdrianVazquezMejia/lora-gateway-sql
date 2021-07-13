@@ -29,7 +29,6 @@ class Test(unittest.TestCase):
             actual_meter_id.append(row[0])
         cur.close()
         self.assertEqual(actual_meter_id, expected_meter_id, "Must be equal")
-    
 
     def testDataBaseCreation(self):
         #SR21 #SR06
@@ -43,7 +42,6 @@ class Test(unittest.TestCase):
         actual_relation_name = cur.fetchone()[0]
         cur.close()
         self.assertEqual(expected_relation_name, actual_relation_name, "Table does not exists")
-    
 
     def testNewMeterAdd(self):
         #SR07 #SR09
@@ -65,7 +63,6 @@ class Test(unittest.TestCase):
         self.assertEqual(actual_id, expected_id)
         self.assertEqual(actual_energy,expected_energy)
         self.assertEqual(actual_state, expected_state)
-    
 
     def testNoAddExistingMeter(self):
         #SR08

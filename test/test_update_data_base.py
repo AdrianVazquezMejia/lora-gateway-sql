@@ -11,7 +11,6 @@ from src.sqlite_manager import *
 
 
 class TestUpdate(unittest.TestCase):
-
     
     def setUp(self):
 
@@ -27,7 +26,6 @@ class TestUpdate(unittest.TestCase):
         conn.commit()
         cur.close()
 
-
     def testUpdateExistingMeter(self):
 
         expected_data = 1234
@@ -38,7 +36,6 @@ class TestUpdate(unittest.TestCase):
         actual_data = cur.fetchone()[1]
         self.assertEqual(actual_data, expected_data, "Should be equal")
         cur.close()
-
 
     def testUpdateNonExistingMeter(self):
 
@@ -51,14 +48,12 @@ class TestUpdate(unittest.TestCase):
         self.assertIsNone(actual_data, "Should be None")
         cur.close()
 
-
     def testSuccessReponse(self):
 
         data = 1234
         expected_response = 0
         actual_response = update_date_base("00ff01", data)
         self.assertEqual(actual_response, expected_response, "Should be equal")
-
 
     def testErorReponse(self):
 
