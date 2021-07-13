@@ -14,10 +14,9 @@ class TestUpdate(unittest.TestCase):
 
     
     def setUp(self):
-        
+
         conn = sqlite3.connect("meter_db.sqlite")
         cur = conn.cursor()
-    
         cur.execute('DROP TABLE IF EXISTS meter_table')
         cur.execute('CREATE TABLE meter_table (meter_id TEXT, energy INTEGER,date TEXT, status BOOLEAN)')
         cur.execute('INSERT INTO meter_table (meter_id, energy,date, status) VALUES (?, ?, ?, ? )',("00fe00",0,"2021-06-26 18:41:23.580757",True))
@@ -27,20 +26,20 @@ class TestUpdate(unittest.TestCase):
         cur.execute('INSERT INTO meter_table (meter_id, energy,date, status) VALUES (?, ?, ?, ? )',("00ff04",0,"2021-06-26 18:41:23.580757",True))
         conn.commit()
         cur.close()
-        
+
 
     def testUpdateExistingMeter(self):
+
         expected_data = 1234
         update_date_base("00ff01", expected_data)
-        
         conn = sqlite3.connect("meter_db.sqlite")
         cur = conn.cursor()
         cur.execute('SELECT * FROM meter_table WHERE meter_id = ?',("00fe00", ))
         actual_data = cur.fetchone()[1]
         self.assertEqual(actual_data, expected_data, "Should be equal")
         cur.close()
-    
-    
+
+
     def testUpdateNonExistingMeter(self):
 
         expected_data = 1234
@@ -51,10 +50,9 @@ class TestUpdate(unittest.TestCase):
         actual_data = cur.fetchone()      
         self.assertIsNone(actual_data, "Should be None")
         cur.close()
-        
-    
+
+
     def testSuccessReponse(self):
-        
 
         data = 1234
         expected_response = 0
@@ -63,7 +61,6 @@ class TestUpdate(unittest.TestCase):
 
 
     def testErorReponse(self):
-        
 
         data = 1234
         expected_response = -1
@@ -74,4 +71,3 @@ class TestUpdate(unittest.TestCase):
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
-

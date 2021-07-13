@@ -14,11 +14,9 @@ loras = [{"loraid":255,"slaves":[1,2,3,4]},{"loraid":254,"slaves":[0]}]  #Para e
 
 
 class Test(unittest.TestCase):        
-        
 
     def testSerialMetersCreates(self):
         #SR01 #SR05 #SR09
-        
 
         conn = sqlite3.connect('meter_db.sqlite')
         cur = conn.cursor()
@@ -36,7 +34,6 @@ class Test(unittest.TestCase):
     def testDataBaseCreation(self):
         #SR21 #SR06
 
-        
         conn = sqlite3.connect('meter_db.sqlite')
         cur = conn.cursor()
         cur.execute('DROP TABLE IF EXISTS meter_table')
@@ -50,6 +47,7 @@ class Test(unittest.TestCase):
 
     def testNewMeterAdd(self):
         #SR07 #SR09
+
         conn = sqlite3.connect("meter_db.sqlite") 
         cur = conn.cursor()
         cur.execute('DROP TABLE IF EXISTS meter_table')
@@ -71,6 +69,7 @@ class Test(unittest.TestCase):
 
     def testNoAddExistingMeter(self):
         #SR08
+
         conn = sqlite3.connect("meter_db.sqlite")
         cur = conn.cursor()
         cur.execute('DROP TABLE IF EXISTS meter_table')

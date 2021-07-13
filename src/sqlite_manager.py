@@ -32,6 +32,7 @@ def energy_load(loras):
 
 
 def load_json(id, write_api_key):
+
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor()
     data = {"id": id,"write_api_key": write_api_key,}# nombres mas significativos para data
@@ -49,6 +50,7 @@ def load_json(id, write_api_key):
                 
 
 def update_date_base(meterid, data):
+
     time = datetime.datetime.now()
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor()
@@ -62,8 +64,9 @@ def update_date_base(meterid, data):
     cur.close()
     return -1
 
-    
+
 if __name__ == '__main__':
+
     print("Hello world")
     loras = [{"loraid":255,"slaves":[1,2,3,4]},{"loraid":254,"slaves":[0]}]
     energy_load(loras)
@@ -73,4 +76,3 @@ if __name__ == '__main__':
         data = 3210
         return_update_date_base = update_date_base(meter_serial['meterid'], data)
         print(return_update_date_base)
-    
