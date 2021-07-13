@@ -7,7 +7,7 @@ import sqlite3
 import datetime
 # Doble comillas en vez de comillas simples
 # nombres mas significativos para cur y conn i.e.: cur --> data_base_cursor
-def energy_load(loras):
+# Redefinicion de name 'data' de outer scope, osea 'data' esta en las funciones y en el main 
     
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor() 
@@ -21,7 +21,7 @@ def energy_load(loras):
             lsb_2 = (slave).to_bytes(1,'big')
             meter_id = msb_4+lsb_2
             cur.execute('SELECT * FROM meter_table WHERE meter_id = ?',(meter_id.hex(), ))
-            if cur.fetchone() == None:
+            if cur.fetchone() is None:
                 date = datetime.datetime.now()
                 cur.execute("INSERT INTO meter_table(meter_id,energy,date,status) VALUES(?,?,?,?)",(meter_id.hex(),0,date,1))
             conn.commit() 
@@ -55,9 +55,8 @@ def update_date_base(meterid, data):
         conn.commit()
         cur.close()
         return 0 
-    else:
-        cur.close()
-        return -1
+    cur.close()
+    return -1
 
     
 if __name__ == '__main__':
