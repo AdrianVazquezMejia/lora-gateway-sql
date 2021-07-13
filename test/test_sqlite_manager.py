@@ -72,7 +72,7 @@ class Test(unittest.TestCase):
         cur = conn.cursor()
         cur.execute('DROP TABLE IF EXISTS meter_table')
         cur.execute('CREATE TABLE meter_table (meter_id TEXT, energy INTEGER, status BOOLEAN)')
-        cur.execute('INSERT INTO meter_table (meter_id, energy,status) VALUES (?, ?, ? )',("00fe00",0,True))
+        cur.execute('INSERT INTO meter_table (meter_id, energy,status) VALUES (?, ?, ?)',("00fe00",0,True))
         conn.commit()
         cur.close()
         energy_load(loras)
