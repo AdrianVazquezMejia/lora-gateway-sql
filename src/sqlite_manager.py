@@ -5,17 +5,17 @@ Created on Jul 7, 2021
 '''
 import sqlite3
 import datetime
-
+# Doble comillas en vez de comillas simples
+# nombres mas significativos para cur y conn i.e.: cur --> data_base_cursor
 def energy_load(loras):
-    conn = sqlite3.connect('meter_db.sqlite')
     
-    cur = conn.cursor()
-    #cur.execute('DROP TABLE IF EXISTS meter_table ')  # Para pruebas
+    conn = sqlite3.connect('meter_db.sqlite')
+    cur = conn.cursor() 
     cur.execute("CREATE TABLE IF NOT EXISTS meter_table (meter_id TEXT,energy INTEGER,date TEXT, status BOOLEAM)")
     conn.commit()
     for lora in loras:
         
-        msb_4 = (lora["loraid"]).to_bytes(2,'big')
+        msb_4 = (lora["loraid"]).to_bytes(2,'big')#nombres mas significativos a msb y lsb
 
         for slave in lora['slaves']:
             lsb_2 = (slave).to_bytes(1,'big')
@@ -23,8 +23,7 @@ def energy_load(loras):
             cur.execute('SELECT * FROM meter_table WHERE meter_id = ?',(meter_id.hex(), ))
             if cur.fetchone() == None:
                 date = datetime.datetime.now()
-                #cur.execute("INSERT INTO meter_table (meter_id, energy, date, status) VALUES(?,?,?,?)",(meter_id.hex(),0,date,False))      #Original
-                cur.execute("INSERT INTO meter_table(meter_id,energy,status) VALUES(?,?,?)",(meter_id.hex(),0,1))      #Modificado para el test
+                cur.execute("INSERT INTO meter_table(meter_id,energy,date,status) VALUES(?,?,?,?)",(meter_id.hex(),0,date,1))
             conn.commit() 
     cur.close()
 
@@ -32,7 +31,7 @@ def energy_load(loras):
 def load_json(id, write_api_key):
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor()
-    data = {"id": id,"write_api_key": write_api_key,}
+    data = {"id": id,"write_api_key": write_api_key,}# nombres mas significativos para data
     data['updates'] = []
     cur.execute('SELECT * FROM meter_table')
     for row in cur:
@@ -50,8 +49,8 @@ def update_date_base(meterid, data):
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor()
     cur.execute('SELECT meter_id FROM meter_table WHERE meter_id = ?', (meterid,) )
-    isInDataBase = cur.fetchall()
-    if isInDataBase:
+    is_in_database = cur.fetchall()
+    if is_in_database:
         cur.execute('UPDATE meter_table SET energy = ?, date = ? ',(data,time, ))
         conn.commit()
         cur.close()
@@ -67,10 +66,8 @@ if __name__ == '__main__':
     energy_load(loras)
     return_json =load_json(id= "0001", write_api_key="PYF7YMZNOM3TJVSM")
     print(return_json)
-    for i in range(len(return_json['updates'])):
-        data = 1234
-        return_update_date_base = update_date_base(return_json['updates'][i]['meterid'], data)
-        
-
-    
+    for meter_serial in return_json['updates']:
+        data = 3210
+        return_update_date_base = update_date_base(meter_serial['meterid'], data)
+        print(return_update_date_base)
     
