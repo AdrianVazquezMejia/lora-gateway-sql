@@ -1,8 +1,15 @@
 /venv
 *.pyc
 *.log
+<<<<<<< HEAD
 .settings
 .xml
 .sqlite
+=======
+*.settings
+*.sqlite
+*.json
+*.xml
+>>>>>>> refs/heads/adrian/develop
 src/__pycache__/
 test/__pycache__/

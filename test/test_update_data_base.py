@@ -7,7 +7,6 @@ import unittest
 
 import sqlite3
 
-from sqlite_manager import update_date_base
 from src.sqlite_manager import *
 
 class TestUpdate(unittest.TestCase):

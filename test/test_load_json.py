@@ -6,7 +6,7 @@ Created on Jul 9, 2021
 import unittest
 
 import sqlite3
-from sqlite_manager import load_json
+#from sqlite_manager import load_json
 from src.sqlite_manager import *
 
 
