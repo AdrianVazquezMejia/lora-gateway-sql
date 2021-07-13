@@ -6,13 +6,15 @@ Created on Jul 7, 2021
 import sqlite3
 import datetime
 import json
+#from builtins import False
 
 def energy_load(loras):
     conn = sqlite3.connect('meter_db.sqlite')
+    
     cur = conn.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS meter_table (meter_id STRING,energy INTEGER,date TEXT, status BOOLEAN)")   #Para el test
+    #cur.execute('DROP TABLE IF EXISTS meter_table ')  # MOSCA
+    cur.execute("CREATE TABLE IF NOT EXISTS meter_table (meter_id TEXT,energy INTEGER,date TEXT, status BOOLEAM)")   #Para el test
     conn.commit()
-    #lsb en nombres mas human readable
     for lora in loras:# Prueba de esta manera
         
         msb_4 = (lora["loraid"]).to_bytes(2,'big')
@@ -22,10 +24,11 @@ def energy_load(loras):
             meter_id = msb_4+lsb_2
             #print(meter_id.hex()) # Mira como ya se imprime
             cur.execute('SELECT * FROM meter_table WHERE meter_id = ?',(meter_id.hex(), ))
+            #print("FETCHDONE",cur.fetchone())
             if cur.fetchone() == None:
                 date = datetime.datetime.now()
-                #cur.execute("INSERT INTO meter_table(meter_id,energy,date,status) VALUES(?,?,?,?)",(meter_id.hex(),0,date,1))      #Original
-                cur.execute("INSERT INTO meter_table(meter_id,energy,status) VALUES(?,?,?)",(meter_id.hex(),0,date,1))      #Modificado para el test
+                cur.execute("INSERT INTO meter_table (meter_id, energy, date, status) VALUES(?,?,?,?)",(meter_id.hex(),0,date,False))      #Original
+                #cur.execute("INSERT INTO meter_table(meter_id,energy,status) VALUES(?,?,?)",(meter_id.hex(),0,1))      #Modificado para el test
             conn.commit() 
     cur.close()
 
@@ -40,21 +43,42 @@ def load_json(id, write_api_key):
         data['updates'].append({
             "meterid": row[0],
             "energy": row[1],
-            #"date": row[2],            #Original
-            "date": 0,                  #Para el test
+            "date": row[2],            #Original
+            #"date": 0,                  #Para el test
             "state": row[3]
             })
     cur.close()
     return data
                 
-
 def update_date_base(meterid, data):
-    pass
+    time = datetime.datetime.now()
+    conn = sqlite3.connect('meter_db.sqlite')
+    cur = conn.cursor()
+    cur.execute('SELECT meter_id FROM meter_table WHERE meter_id = ?', (meterid,) )
+    isInDataBase = cur.fetchall()
+    if isInDataBase:
+        cur.execute('UPDATE meter_table SET energy = ?, date = ? ',(data,time, ))
+        conn.commit()
+        cur.close()
+        return 0 
+    else:
+        print("NO ACTUALIZA")
+        cur.close()
+        return -1
 
+    
 if __name__ == '__main__':
     print("Hello world")
     loras = [{"loraid":255,"slaves":[1,2,3,4]},{"loraid":254,"slaves":[0]}]
     energy_load(loras)
     return_json =load_json(id= "0001", write_api_key="PYF7YMZNOM3TJVSM")
     print(return_json)
+    
+    #PRUEBA
+    for i in range(len(return_json['updates'])):
+        data = 1234
+        return_update_date_base = update_date_base(return_json['updates'][i]['meterid'], data)
+        print(return_update_date_base)
+
+    
     
