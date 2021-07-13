@@ -8,6 +8,8 @@ import datetime
 # Doble comillas en vez de comillas simples
 # nombres mas significativos para cur y conn i.e.: cur --> data_base_cursor
 # Redefinicion de name 'data' de outer scope, osea 'data' esta en las funciones y en el main 
+
+
 def energy_load(loras):
     
     conn = sqlite3.connect('meter_db.sqlite')
@@ -45,6 +47,7 @@ def load_json(id, write_api_key):
     cur.close()
     return data
                 
+
 def update_date_base(meterid, data):
     time = datetime.datetime.now()
     conn = sqlite3.connect('meter_db.sqlite')

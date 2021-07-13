@@ -11,6 +11,8 @@ from src.sqlite_manager import *
 
 
 class TestLoadJson(unittest.TestCase):
+    
+    
     def setUp(self):
         
         conn = sqlite3.connect("meter_db.sqlite")
@@ -26,6 +28,7 @@ class TestLoadJson(unittest.TestCase):
         conn.commit()
         cur.close()
         
+    
     def testIDisOnJson(self):
         
         expected_id = "0001"
@@ -33,6 +36,7 @@ class TestLoadJson(unittest.TestCase):
         actual_id = actual_output["id"]
         self.assertEqual(actual_id, expected_id,"Must have the same id")
 
+    
     def testAPIKeyOnJson(self):
 
         expected_write_api_key = "PYF7YMZNOM3TJVSM"
@@ -40,18 +44,21 @@ class TestLoadJson(unittest.TestCase):
         actual_write_api_key = actual_output["write_api_key"]
         self.assertEqual(actual_write_api_key, expected_write_api_key, "Must have the same api key")
 
+    
     def testLenOfDic(self):
         
         actual_output = load_json(id = "0001", write_api_key="PYF7YMZNOM3TJVSM")
         actual_len = len(actual_output)
         self.assertEqual(actual_len, 3, "Must have 3 fields")
 
+    
     def testIsUpdatesOnOutput(self):
 
         actual_output = load_json(id = "0001", write_api_key="PYF7YMZNOM3TJVSM")
         isUpdatesOnOutput = "updates" in actual_output
         self.assertTrue(isUpdatesOnOutput, "Must contain updates")
         
+    
     def testFieldOfUpdates(self):
         
         actual_output = load_json(id = "0001", write_api_key="PYF7YMZNOM3TJVSM")
@@ -61,6 +68,8 @@ class TestLoadJson(unittest.TestCase):
             self.assertTrue("energy" in meter_card, "Must contain energy key")
             self.assertTrue("date" in meter_card, "Must contain energy key")
             self.assertTrue("state" in meter_card, "Must contain energy key")
+
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

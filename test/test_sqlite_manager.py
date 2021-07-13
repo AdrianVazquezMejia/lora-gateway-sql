@@ -12,11 +12,14 @@ from src.sqlite_manager import *
 #loras = [{"loraid":255,"slaves":[1,2,3]},{"loraid":254,"slaves":[0]}]   Original
 loras = [{"loraid":255,"slaves":[1,2,3,4]},{"loraid":254,"slaves":[0]}]  #Para el test
 
+
 class Test(unittest.TestCase):        
         
+
     def testSerialMetersCreates(self):
         #SR01 #SR05 #SR09
         
+
         conn = sqlite3.connect('meter_db.sqlite')
         cur = conn.cursor()
         cur.execute('DROP TABLE IF EXISTS meter_table')
@@ -29,22 +32,22 @@ class Test(unittest.TestCase):
         cur.close()
         self.assertEqual(actual_meter_id, expected_meter_id, "Must be equal")
     
-    
-    
+
     def testDataBaseCreation(self):
         #SR21 #SR06
+
+        
         conn = sqlite3.connect('meter_db.sqlite')
         cur = conn.cursor()
         cur.execute('DROP TABLE IF EXISTS meter_table')
-
         energy_load(loras)
-
         cur.execute('SELECT name FROM sqlite_master WHERE type= ? AND name= ? ',('table','meter_table'))
         expected_relation_name  = "meter_table"
         actual_relation_name = cur.fetchone()[0]
         cur.close()
         self.assertEqual(expected_relation_name, actual_relation_name, "Table does not exists")
     
+
     def testNewMeterAdd(self):
         #SR07 #SR09
         conn = sqlite3.connect("meter_db.sqlite") 

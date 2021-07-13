@@ -9,7 +9,10 @@ import sqlite3
 
 from src.sqlite_manager import *
 
+
 class TestUpdate(unittest.TestCase):
+
+    
     def setUp(self):
         
         conn = sqlite3.connect("meter_db.sqlite")
@@ -25,6 +28,7 @@ class TestUpdate(unittest.TestCase):
         conn.commit()
         cur.close()
         
+
     def testUpdateExistingMeter(self):
         expected_data = 1234
         update_date_base("00ff01", expected_data)
@@ -51,17 +55,21 @@ class TestUpdate(unittest.TestCase):
     
     def testSuccessReponse(self):
         
+
         data = 1234
         expected_response = 0
         actual_response = update_date_base("00ff01", data)
         self.assertEqual(actual_response, expected_response, "Should be equal")
 
+
     def testErorReponse(self):
         
+
         data = 1234
         expected_response = -1
         actual_response = update_date_base("00ff00", data)
         self.assertEqual(actual_response, expected_response, "Should be equal")
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
