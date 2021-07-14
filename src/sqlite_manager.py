@@ -1,17 +1,33 @@
-'''
-Created on Jul 7, 2021
+"""! @brief Example Python program with Doxygen style comments."""
 
-@author: adrian
-'''
+##
+# @file sqlite_manager.py
+#
+# @brief SQL management for energy storage on disk
+#
+# @section todo_sqlite_manager TODO
+# - Comments for all function
+# - Meaningful names for variables
+# - Doble comillas en vez de comillas simples
+# - nombres mas significativos para cur y conn i.e.: cur --> data_base_cursor
+# - Redefinicion de name 'data' de outer scope, osea 'data' esta en las funciones y en el main 
+#
+# @section author_sqlite_manager Author(s)
+# - Created by Adrian Vazquez on 07/01/2021.
+# - Modified by Daniel Malaver on 07/13/2021.
+#
+# Copyright (c) 2021 Corporacion Estelio.  All rights reserved.
+
 import sqlite3
 import datetime
-# Doble comillas en vez de comillas simples
-# nombres mas significativos para cur y conn i.e.: cur --> data_base_cursor
-# Redefinicion de name 'data' de outer scope, osea 'data' esta en las funciones y en el main 
+
 
 
 def energy_load(loras):
+    """! Add description here
     
+    @param loras   Add description here
+    """
     conn = sqlite3.connect('meter_db.sqlite')
     cur = conn.cursor() 
     cur.execute("CREATE TABLE IF NOT EXISTS meter_table (meter_id TEXT,energy INTEGER,date TEXT, status BOOLEAM)")
