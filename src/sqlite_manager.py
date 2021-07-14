@@ -1,4 +1,4 @@
-"""! @brief Example Python program with Doxygen style comments."""
+"""! @brief Insert, actualize and post data in a database."""
 
 ##
 # @file sqlite_manager.py
@@ -20,75 +20,89 @@
 
 import sqlite3
 import datetime
-
+import json
 
 
 def energy_load(loras):
-    """! Add description here
+    """! Organize meters' characteristics in a database with the meter ID in hexadecimal way, 
+            the energy, the date of creation and the status 
     
-    @param loras   Add description here
+    @param loras   Array of dictionaries with meters'characteristics
     """
-    conn = sqlite3.connect('meter_db.sqlite')
-    cur = conn.cursor() 
-    cur.execute("CREATE TABLE IF NOT EXISTS meter_table (meter_id TEXT,energy INTEGER,date TEXT, status BOOLEAM)")
-    conn.commit()
+    data_base_connection = sqlite3.connect("meter_db.sqlite")
+    data_base_cursor = data_base_connection.cursor() 
+    data_base_cursor.execute("CREATE TABLE IF NOT EXISTS meter_table (meter_id TEXT,energy INTEGER,date TEXT, status BOOLEAM)")
+    data_base_connection.commit()
     for lora in loras:
         
-        msb_4 = (lora["loraid"]).to_bytes(2,'big')#nombres mas significativos a msb y lsb
-
-        for slave in lora['slaves']:
-            lsb_2 = (slave).to_bytes(1,'big')
-            meter_id = msb_4+lsb_2
-            cur.execute('SELECT * FROM meter_table WHERE meter_id = ?',(meter_id.hex(), ))
-            if cur.fetchone() is None:
+        lora_id_to_byte = (lora["loraid"]).to_bytes(2,"big")
+        for slave in lora["slaves"]:
+            slave_number_to_byte = (slave).to_bytes(1,"big")
+            meter_id = lora_id_to_byte + slave_number_to_byte
+            data_base_cursor.execute("SELECT * FROM meter_table WHERE meter_id = ?",(meter_id.hex(), ))
+            if data_base_cursor.fetchone() is None:
                 date = datetime.datetime.now()
-                cur.execute("INSERT INTO meter_table(meter_id,energy,date,status) VALUES(?,?,?,?)",(meter_id.hex(),0,date,1))
-            conn.commit() 
-    cur.close()
+                data_base_cursor.execute("INSERT INTO meter_table(meter_id,energy,date,status) VALUES(?,?,?,?)",(meter_id.hex(),0,date,1))
+            data_base_connection.commit() 
+    data_base_cursor.close()
 
 
 def load_json(id, write_api_key):
-
-    conn = sqlite3.connect('meter_db.sqlite')
-    cur = conn.cursor()
-    data = {"id": id,"write_api_key": write_api_key,}# nombres mas significativos para data
-    data['updates'] = []
-    cur.execute('SELECT * FROM meter_table')
-    for row in cur:
-        data['updates'].append({
+    """! Post a dictionary with meters' characteristics located in the database
+    
+    @param id              dictionary ID  
+    @param write_api_key   identifier key
+    
+    @return dic_meters     dictionary with database's information
+    """
+    data_base_connection = sqlite3.connect("meter_db.sqlite")
+    data_base_cursor = data_base_connection.cursor()
+    dic_meters = {"id": id,"write_api_key": write_api_key,}
+    dic_meters["updates"] = []
+    data_base_cursor.execute("SELECT * FROM meter_table")
+    for row in data_base_cursor:
+        dic_meters["updates"].append({
             "meterid": row[0],
             "energy": row[1],
             "date": row[2],
             "state": row[3]
             })
-    cur.close()
-    return data
+    data_base_cursor.close()
+    print(json.dumps(dic_meters))
+    return dic_meters
                 
 
 def update_date_base(meterid, data):
-
+    """! Actualize information in the database
+    
+    @param meterid   meter's ID 
+    @param data      value to set energy in the database
+    
+    @return success or error code    
+    """
     time = datetime.datetime.now()
-    conn = sqlite3.connect('meter_db.sqlite')
-    cur = conn.cursor()
-    cur.execute('SELECT meter_id FROM meter_table WHERE meter_id = ?', (meterid,) )
-    is_in_database = cur.fetchall()
+    data_base_connection = sqlite3.connect("meter_db.sqlite")
+    data_base_cursor = data_base_connection.cursor()
+    data_base_cursor.execute("SELECT meter_id FROM meter_table WHERE meter_id = ?", (meterid,) )
+    is_in_database = data_base_cursor.fetchall()
     if is_in_database:
-        cur.execute('UPDATE meter_table SET energy = ?, date = ? ',(data,time, ))
-        conn.commit()
-        cur.close()
+        data_base_cursor.execute("UPDATE meter_table SET energy = ?, date = ? ",(data,time, ))
+        data_base_connection.commit()
+        data_base_cursor.close()
         return 0 
-    cur.close()
+    data_base_cursor.close()
     return -1
 
 
 if __name__ == '__main__':
-
+    """! Main program entry
+    
+    """
     print("Hello world")
     loras = [{"loraid":255,"slaves":[1,2,3,4]},{"loraid":254,"slaves":[0]}]
     energy_load(loras)
     return_json =load_json(id= "0001", write_api_key="PYF7YMZNOM3TJVSM")
-    print(return_json)
-    for meter_serial in return_json['updates']:
+    for meter_serial in return_json["updates"]:
         data = 3210
-        return_update_date_base = update_date_base(meter_serial['meterid'], data)
+        return_update_date_base = update_date_base(meter_serial["meterid"], data)
         print(return_update_date_base)
