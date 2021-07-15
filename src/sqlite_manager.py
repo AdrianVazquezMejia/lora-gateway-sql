@@ -17,8 +17,9 @@ import json
 
 
 def energy_load(loras):
-    """! Organize meters' characteristics in a database with the meter ID in hexadecimal way, 
-            the energy, the date of creation and the status 
+    """! Organize meters' characteristics in a database with 
+        the meter ID in hexadecimal way, 
+        the energy, the date of creation and the status 
 
     @param loras   Array of dictionaries with meters'characteristics
     """
@@ -27,7 +28,7 @@ def energy_load(loras):
     data_base_cursor.execute("CREATE TABLE IF NOT EXISTS meter_table (meter_id TEXT,energy INTEGER,date TEXT, status BOOLEAM)")
     data_base_connection.commit()
     for lora in loras:
-        
+
         lora_id_to_byte = (lora["loraid"]).to_bytes(2, "big")
         for slave in lora["slaves"]:
             slave_number_to_byte = (slave).to_bytes(1, "big")
@@ -41,7 +42,8 @@ def energy_load(loras):
 
 
 def load_json(id, write_api_key):
-    """! Post a dictionary with meters' characteristics located in the database
+    """! Post a dictionary with meters' characteristics
+     located in the database
 
     @param id              dictionary ID  
     @param write_api_key   identifier key
@@ -61,7 +63,6 @@ def load_json(id, write_api_key):
             "state": row[3]
             })
     data_base_cursor.close()
-    print(json.dumps(dic_meters))
     return dic_meters
 
 
@@ -78,13 +79,13 @@ def update_date_base(meterid, data):
     data_base_cursor = data_base_connection.cursor()
     data_base_cursor.execute("SELECT meter_id FROM meter_table WHERE meter_id = ?", (meterid,))
     is_in_database = data_base_cursor.fetchall()
+    result = -1
     if is_in_database:
         data_base_cursor.execute("UPDATE meter_table SET energy = ?, date = ? ", (data, time,))
         data_base_connection.commit()
-        data_base_cursor.close()
-        return 0 
+        result = 0 
     data_base_cursor.close()
-    return -1
+    return result
 
 
 if __name__ == '__main__':
