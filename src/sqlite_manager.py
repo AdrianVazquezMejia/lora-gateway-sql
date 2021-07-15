@@ -96,6 +96,6 @@ if __name__ == '__main__':
     energy_load(loras)
     return_json = load_json(id="0001", write_api_key="PYF7YMZNOM3TJVSM")
     for meter_serial in return_json["updates"]:
-        data = 3210
-        return_update_date_base = update_date_base(meter_serial["meterid"], data)
-        print(return_update_date_base)
+        data_test_main = 3210
+        return_update_date_base = update_date_base(meter_serial["meterid"], data_test_main)
+        print("Success") if return_update_date_base == 0 else print("Error")
