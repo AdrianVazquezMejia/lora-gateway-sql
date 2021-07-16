@@ -81,7 +81,7 @@ def update_date_base(meterid, data):
     is_in_database = data_base_cursor.fetchall()
     result = -1
     if is_in_database:
-        data_base_cursor.execute("UPDATE meter_table SET energy = ?, date = ? ", (data, time,))
+        data_base_cursor.execute("UPDATE meter_table SET energy = ?, date = ? WHERE meter_id = ?", (data, time,meterid,))
         data_base_connection.commit()
         result = 0 
     data_base_cursor.close()
